@@ -1,0 +1,32 @@
+name: Test
+
+on:
+  pull_request:
+    branches: [ dev ]
+  push:
+    branches: [ dev ]
+
+jobs:
+  build:
+    name: code review
+    runs-on: ubuntu-latest #Especifica que o trabalho será executado na última versão do sistema operacional Ubuntu.
+
+    steps:  #Define as etapas individuais a serem executadas neste trabalho.
+      - uses: actions/checkout@v2 #Usa a ação "checkout" para clonar o repositório atual no ambiente de execução.
+      - name: Set up JDK 17
+        uses: actions/setup-java@v1 # Essa linha indica que você está usando a ação chamada actions/setup-java da versão 1
+        with:                         # Essa ação é definida e mantida pela GitHub Actions e é usada para configurar o ambiente Java no sistema de execução.
+          java-version: 17
+
+      - name: Cache Maven packages
+        uses: actions/cache@v1  # Está sendo utilizada para armazenar em cache as dependências do Maven (pacotes) para aumentar a velocidade de compilações futuras.
+        with:
+          path: ~/.m2 #Especifica o diretório que será armazenado em cache
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }} # Isso define uma chave única para identificar o cache. A chave é composta por três partes
+          restore-keys: ${{ runner.os }}-m2
+
+      - name: Run test
+        run: mvn -B test --file pom.xml
+
+      - name: deploy service
+        run: echo "deploy the service"

@@ -1,0 +1,39 @@
+name: TestCode
+on:
+  pull_request:
+    branches: [ main ]
+    types:
+      - opened
+
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    # env:
+    #   API_DATABASE_URL: ${{secrets.API_DATABASE_URL}}
+    #   LOGGER_SERVICE_NAME: ${{secrets.LOGGER_SERVICE_NAME}}
+    #   LOGGER_ENVIRONMENT: ${{secrets.LOGGER_ENVIRONMENT}}
+    #   LOGGER_LEVEL: ${{secrets.LOGGER_LEVEL}}
+    #   API_JWT_KEY: ${{secrets.API_JWT_KEY}}
+    #   API_CRYPTO_KEY: ${{secrets.API_CRYPTO_KEY}}
+    #   USER_AMD_PASSWORD: ${{secrets.USER_AMD_PASSWORD}}
+    #   PORT: ${{secrets.PORT}}
+    #   BASE_URL: ${{secrets.BASE_URL}}
+    #   TWILIO_EMAIL_API_KEY: ${{secrets.TWILIO_EMAIL_API_KEY}}
+    #   EMAIL: ${{secrets.EMAIL}}
+    #   CLOUDINARY_CLOUD_NAME: ${{secrets.CLOUDINARY_CLOUD_NAME}}
+    #   CLOUDINARY_API_KEY: ${{secrets.CLOUDINARY_API_KEY}}
+    #   CLOUDINARY_API_SECRET: ${{secrets.CLOUDINARY_API_SECRET}}
+    strategy:
+      matrix:
+        node-version: [16.x]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Install dependencies
+        run: npm i
+      - name: Run tests
+        run: npm run test
